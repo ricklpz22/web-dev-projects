@@ -1,0 +1,84 @@
+/* Projects page */
+.card-x {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  height: 100%;
+  transition: .25s;
+  overflow: hidden;
+}
+
+.card-x:hover {
+  transform: translateY(-6px);
+  border-color: rgba(217, 119, 87, .6);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .4);
+}
+
+/* Uniform image area: every thumbnail is cropped to the same ratio */
+.thumb {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(135deg, rgba(217, 119, 87, .35), rgba(255, 255, 255, .04));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  color: var(--orange);
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .5s ease;
+}
+
+.card-x:hover .thumb img {
+  transform: scale(1.06);
+}
+
+/* Card text: consistent title, description and tag rhythm */
+.card-x h5 {
+  font-size: 1.15rem;
+  letter-spacing: -.01em;
+  line-height: 1.3;
+  margin-bottom: .6rem;
+}
+
+.card-x p {
+  font-size: .9rem;
+  font-weight: 400;
+  line-height: 1.6;
+  margin-bottom: 1.1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-x .p-4 > .mt-auto {
+  border-top: 1px solid var(--line);
+}
+
+.filter-bar .btn {
+  border-radius: 999px;
+  font-size: .85rem;
+  padding: .4rem 1.1rem;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  background: transparent;
+}
+
+.filter-bar .btn.active,
+.filter-bar .btn:hover {
+  background: rgba(217, 119, 87, .2);
+  border-color: var(--orange);
+  color: #fff;
+}
+
+.project-col {
+  transition: opacity .25s;
+}

@@ -1,0 +1,519 @@
+/* Shared styles: theme, glass navbar, buttons, sections, home page */
+:root {
+  --bg: #111112;
+  --surface: #1a1a1c;
+  --orange: #D97757;
+  --orange-2: #e8906f;
+  --white: #fff;
+  --muted: #a3a3a8;
+  --line: rgba(255, 255, 255, .1);
+  box-sizing: border-box;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--bg);
+  z-index: 1040;
+}
+
+/* ambient glow so the glass has something to refract */
+.glow {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: .35;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.glow.a {
+  width: 420px;
+  height: 420px;
+  background: var(--orange);
+  top: -120px;
+  right: -100px;
+}
+
+.glow.b {
+  width: 320px;
+  height: 320px;
+  background: #b9532f;
+  bottom: 10%;
+  left: -120px;
+  opacity: .22;
+}
+
+main,
+footer {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* Liquid glass navbar */
+.glass-nav {
+  position: fixed;
+  top: calc(14px + env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(960px, calc(100% - 24px));
+  z-index: 1050;
+  padding: .55rem .9rem;
+  border-radius: 26px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, .04));
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, .18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .45),
+    inset 0 -1px 0 rgba(255, 255, 255, .06),
+    0 10px 34px rgba(0, 0, 0, .45);
+}
+
+.glass-nav::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(120% 90% at 15% 0%, rgba(255, 255, 255, .22), transparent 55%);
+}
+
+.glass-nav .navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  font-weight: 700;
+  color: var(--white);
+  position: relative;
+  z-index: 1;
+}
+
+.glass-nav .nav-link {
+  color: rgba(255, 255, 255, .85);
+  font-weight: 500;
+  border-radius: 999px;
+  padding: .45rem 1rem !important;
+  position: relative;
+  z-index: 1;
+  transition: .2s;
+}
+
+.glass-nav .nav-link:hover,
+.glass-nav .nav-link.active {
+  background: rgba(217, 119, 87, .28);
+  color: var(--white);
+  box-shadow: inset 0 0 0 1px rgba(217, 119, 87, .5);
+}
+
+.glass-nav .navbar-toggler {
+  border: 0;
+  box-shadow: none;
+  position: relative;
+  z-index: 1;
+}
+
+.glass-nav .navbar-collapse {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* Logo + photo slots (click to upload) */
+.slot {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  color: var(--muted);
+  text-align: center;
+  font-size: .7rem;
+  line-height: 1.2;
+}
+
+.slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.logo-slot {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1.5px dashed rgba(255, 255, 255, .45);
+  background: rgba(255, 255, 255, .06);
+  font-size: .55rem;
+}
+
+.logo-slot.filled {
+  border: 0;
+  background: transparent;
+}
+
+.logo-slot img {
+  object-fit: contain;
+}
+
+.photo-ring {
+  padding: 8px;
+  border-radius: 50%;
+  background: conic-gradient(from 200deg, var(--orange), #fff3, var(--orange));
+  width: min(300px, 72vw);
+  aspect-ratio: 1;
+  margin: auto;
+}
+
+.photo-slot {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px dashed rgba(255, 255, 255, .3);
+  flex-direction: column;
+  font-size: .85rem;
+}
+
+.photo-slot.filled {
+  border: 0;
+}
+
+.slot:hover {
+  border-color: var(--orange);
+}
+
+
+/* Sections */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 7.5rem 0 4rem;
+}
+
+.eyebrow {
+  color: var(--orange);
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-size: .8rem;
+}
+
+.hero h1 {
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  font-weight: 800;
+  letter-spacing: -.03em;
+  line-height: 1.05;
+}
+
+.hero h1 span {
+  color: var(--orange);
+}
+
+.lead {
+  color: var(--muted);
+}
+
+.btn-orange {
+  background: var(--orange);
+  color: #111;
+  border: 0;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: .7rem 1.6rem;
+}
+
+.btn-orange:hover {
+  background: var(--orange-2);
+  color: #111;
+}
+
+.btn-ghost {
+  border: 1px solid var(--line);
+  color: var(--white);
+  border-radius: 999px;
+  padding: .7rem 1.6rem;
+  background: rgba(255, 255, 255, .04);
+}
+
+.btn-ghost:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+section.block {
+  padding: 5rem 0;
+}
+
+.section-title {
+  font-weight: 800;
+  letter-spacing: -.02em;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+}
+
+.section-title::after {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--orange);
+  margin-top: .6rem;
+}
+
+.tag {
+  display: inline-block;
+  font-size: .72rem;
+  padding: .2rem .65rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  margin: 0 .3rem .3rem 0;
+}
+
+.cert {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.cert .ico {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: rgba(217, 119, 87, .16);
+  color: var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex: none;
+}
+
+.cert small {
+  color: var(--muted);
+}
+
+footer {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  padding: 2rem 0;
+  font-size: .9rem;
+}
+
+
+.subpage {
+  padding-top: 8rem;
+  min-height: 80vh;
+}
+
+.hero {
+  min-height: 92vh;
+}
+
+.timeline {
+  position: relative;
+  padding-left: 1.8rem;
+  border-left: 2px solid var(--line);
+}
+
+.tl-item {
+  position: relative;
+  margin-bottom: 1.8rem;
+}
+
+.tl-item::before {
+  content: "";
+  position: absolute;
+  left: calc(-1.8rem - 7px);
+  top: .35rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 0 4px rgba(217, 119, 87, .2);
+}
+
+.tl-date {
+  color: var(--orange);
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.progress {
+  background: rgba(255, 255, 255, .08);
+  height: 8px;
+  border-radius: 8px;
+}
+
+.progress-bar {
+  background: var(--orange);
+  border-radius: 8px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 1.6rem;
+  height: 100%;
+}
+
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+main {
+  animation: fade .35s ease;
+}
+
+
+/* Logo in the navbar: put your file next to the HTML files and name it logo.png */
+.site-logo {
+  height: 38px;
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+}
+
+.site-logo.missing {
+  width: 38px;
+  overflow: hidden;
+  font-size: 0;
+  border: 1.5px dashed rgba(255, 255, 255, .45);
+  background: rgba(255, 255, 255, .06);
+}
+
+
+/* Profile picture: put your photo next to the HTML files and name it me.jpg */
+.site-photo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  background: var(--surface);
+}
+
+.site-photo.missing {
+  border: 2px dashed rgba(255, 255, 255, .3);
+  font-size: 0;
+}
+
+
+/* Skills cards */
+.skill-ico {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(217, 119, 87, .16);
+  color: var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: .95rem;
+  margin-bottom: 1rem;
+}
+
+.skill-card {
+  transition: transform .25s, border-color .25s;
+}
+
+.skill-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(217, 119, 87, .5);
+}
+
+.skill-card .tag {
+  font-size: .8rem;
+  padding: .3rem .8rem;
+  color: var(--white);
+  background: rgba(255, 255, 255, .04);
+  transition: .2s;
+}
+
+.skill-card .tag:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+/* Container for the image */
+.photo-ring {
+  position: relative;
+  display: inline-block;
+  width: 100%; /* Ensure the container matches the image size */
+  height: 100%; /* Ensure the container matches the image size */
+  overflow: hidden; /* Prevent overflow */
+}
+
+/* Default image */
+.photo-ring .site-photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure the image scales properly */
+  transition: opacity 0.5s ease-in-out; /* Smooth fade effect */
+  opacity: 1; /* Default image is fully visible */
+}
+
+/* Hover effect: Fade out the default image */
+.photo-ring:hover .site-photo {
+  opacity: 0; /* Default image fades out */
+}
+
+/* Second image (hover image) */
+.photo-ring::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('gallery/jabe.png') center/cover no-repeat; /* Replace with your second image path */
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.5s ease-in-out; /* Smooth fade effect */
+}
+
+/* Hover effect: Fade in the second image */
+.photo-ring:hover::after {
+  opacity: 1; /* Second image becomes visible */
+}

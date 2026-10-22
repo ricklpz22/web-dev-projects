@@ -1,0 +1,41 @@
+/* Contact page */
+.form-control {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--white);
+  border-radius: 12px;
+  padding: .8rem 1rem;
+}
+
+.form-control:focus {
+  background: var(--surface);
+  color: var(--white);
+  border-color: var(--orange);
+  box-shadow: 0 0 0 .2rem rgba(217, 119, 87, .2);
+}
+
+.form-control::placeholder {
+  color: #77777d;
+}
+
+.contact-link {
+  color: var(--white);
+  text-decoration: none;
+}
+
+.contact-link:hover {
+  color: var(--orange);
+}
+
+#formStatus {
+  min-height: 1.5rem;
+  font-size: .9rem;
+}
+
+#formStatus.ok {
+  color: var(--orange);
+}
+
+.form-control.is-invalid {
+  border-color: #e5484d;
+}
