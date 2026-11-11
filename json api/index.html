@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Runeterra Dex | League of Legends Champions</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #10131b; color: #f4f5f7; }
+    .topbar { background: linear-gradient(110deg, #091b2b, #123c4b); border-bottom: 1px solid #c89b3c; }
+    .brand { color: #f0e6d2; letter-spacing: .12em; font-weight: 800; }
+    .champion-card { background: #19222d; border: 1px solid #344454; color: #f4f5f7; transition: .2s; height: 100%; }
+    .champion-card:hover { transform: translateY(-4px); border-color: #c89b3c; }
+    .champion-image { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: top; }
+    .role-badge { background: #263e4b; color: #d8c99b; border: 1px solid #536878; }
+    .page-link { background: #19222d; border-color: #344454; color: #f0e6d2; cursor: pointer; }
+    .page-item.active .page-link { background: #9b762d; border-color: #c89b3c; }
+    .page-item.disabled .page-link { background: #111820; color: #697581; }
+    .form-control, .form-select { background: #19222d; color: #fff; border-color: #435363; }
+    .form-control:focus, .form-select:focus { background: #19222d; color: #fff; border-color: #c89b3c; box-shadow: 0 0 0 .2rem #c89b3c33; }
+    .form-control::placeholder { color: #9aa5af; }
+    .muted { color: #aeb8c2; }
+    a { text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header class="topbar shadow mb-4">
+    <div class="container py-4 text-center">
+      <div class="brand display-5">RUNETERRA DEX</div>
+      <div class="muted">League of Legends Champion Database</div>
+    </div>
+  </header>
+
+  <main class="container pb-5">
+    <div class="row g-3 align-items-center mb-4">
+      <div class="col-12 col-md-7">
+        <input id="searchInput" class="form-control form-control-lg" type="search"
+          placeholder="Search champions by name or title...">
+      </div>
+      <div class="col-12 col-md-5">
+        <select id="roleFilter" class="form-select form-select-lg">
+          <option value="">All champion classes</option>
+          <option value="Fighter">Fighter</option>
+          <option value="Tank">Tank</option>
+          <option value="Mage">Mage</option>
+          <option value="Assassin">Assassin</option>
+          <option value="Marksman">Marksman</option>
+          <option value="Support">Support</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <p class="muted mb-0" id="resultCount">Loading champions...</p>
+      <small class="muted" id="versionLabel"></small>
+    </div>
+
+    <div id="parent" class="row g-4">
+      <div class="col-12 text-center py-5">
+        <div class="spinner-border text-warning" role="status"></div>
+        <p class="muted mt-3">Loading champions from Riot Data Dragon...</p>
+      </div>
+    </div>
+
+    <nav class="mt-4" aria-label="Champion pagination">
+      <ul class="pagination justify-content-center" id="pagination"></ul>
+    </nav>
+  </main>
+
+  <script>
+    const perPageLoad = 20;
+    let page = 1;
+    let allChampions = [];
+    let filteredChampions = [];
+
+    const elParent = document.getElementById("parent");
+    const elPagination = document.getElementById("pagination");
+    const elSearch = document.getElementById("searchInput");
+    const elRole = document.getElementById("roleFilter");
+    const elCount = document.getElementById("resultCount");
+    const elVersion = document.getElementById("versionLabel");
+
+    // Get the newest published Data Dragon version instead of hardcoding a patch number.
+    async function loadChampions() {
+      try {
+        const versionsResponse = await fetch("https://ddragon.leagueoflegends.com/api/versions.json");
+        if (!versionsResponse.ok) throw new Error("Could not load the game version.");
+        const versions = await versionsResponse.json();
+        const version = versions[0];
+        elVersion.textContent = "Data Dragon version " + version;
+
+        // The champion.json endpoint returns the champion list and basic information.
+        const response = await fetch(
+          `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`
+        );
+        if (!response.ok) throw new Error("Could not load champion data.");
+        const result = await response.json();
+
+        allChampions = Object.values(result.data);
+        filteredChampions = [...allChampions];
+        renderChampions();
+      } catch (error) {
+        elParent.innerHTML = `<div class="col-12"><div class="alert alert-danger">
+          ${error.message} Please check your internet connection and refresh the page.
+        </div></div>`;
+        elCount.textContent = "Unable to load champions";
+      }
+    }
+
+    function renderChampions() {
+      const totalPages = Math.max(1, Math.ceil(filteredChampions.length / perPageLoad));
+      if (page > totalPages) page = totalPages;
+
+      const startIndex = (page - 1) * perPageLoad;
+      const currentChampions = filteredChampions.slice(startIndex, startIndex + perPageLoad);
+
+      elParent.innerHTML = "";
+      elCount.textContent = `${filteredChampions.length} champions found`;
+
+      if (currentChampions.length === 0) {
+        elParent.innerHTML = `<div class="col-12 text-center muted py-5">No champions match your search.</div>`;
+      }
+
+      currentChampions.forEach(champion => {
+        const imageUrl = `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${champion.id}_0.jpg`;
+        const tags = champion.tags.map(tag =>
+          `<span class="badge role-badge me-1">${tag}</span>`
+        ).join("");
+
+        elParent.innerHTML += `
+          <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+            <a href="view.html?id=${encodeURIComponent(champion.id)}">
+              <article class="card champion-card overflow-hidden">
+                <img class="champion-image" src="${imageUrl}"
+                  alt="${champion.name}" loading="lazy"
+                  onerror="this.src='https://ddragon.leagueoflegends.com/cdn/${currentVersion()}/img/champion/${champion.image.full}'">
+                <div class="card-body">
+                  <h5 class="card-title mb-1">${champion.name}</h5>
+                  <p class="muted small mb-3">${champion.title}</p>
+                  ${tags}
+                </div>
+              </article>
+            </a>
+          </div>
+        `;
+      });
+
+      renderPagination(totalPages);
+    }
+
+    function currentVersion() {
+      return document.getElementById("versionLabel").textContent.replace("Data Dragon version ", "");
+    }
+
+    function renderPagination(totalPages) {
+      elPagination.innerHTML = `
+        <li class="page-item ${page === 1 ? "disabled" : ""}">
+          <button class="page-link" onclick="changePage(${page - 1})">Previous</button>
+        </li>
+      `;
+
+      for (let i = 1; i <= totalPages; i++) {
+        // Keep the pagination compact when the list has many pages.
+        if (i === 1 || i === totalPages || Math.abs(i - page) <= 1) {
+          elPagination.innerHTML += `
+            <li class="page-item ${page === i ? "active" : ""}">
+              <button class="page-link" onclick="changePage(${i})">${i}</button>
+            </li>`;
+        } else if (Math.abs(i - page) === 2) {
+          elPagination.innerHTML += `<li class="page-item disabled"><span class="page-link">…</span></li>`;
+        }
+      }
+
+      elPagination.innerHTML += `
+        <li class="page-item ${page === totalPages ? "disabled" : ""}">
+          <button class="page-link" onclick="changePage(${page + 1})">Next</button>
+        </li>
+      `;
+    }
+
+    function changePage(newPage) {
+      const totalPages = Math.max(1, Math.ceil(filteredChampions.length / perPageLoad));
+      if (newPage < 1 || newPage > totalPages) return;
+      page = newPage;
+      renderChampions();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function filterChampions() {
+      const searchTerm = elSearch.value.trim().toLowerCase();
+      const selectedRole = elRole.value;
+
+      filteredChampions = allChampions.filter(champion => {
+        const matchesSearch =
+          champion.name.toLowerCase().includes(searchTerm) ||
+          champion.title.toLowerCase().includes(searchTerm);
+        const matchesRole = !selectedRole || champion.tags.includes(selectedRole);
+        return matchesSearch && matchesRole;
+      });
+
+      page = 1;
+      renderChampions();
+    }
+
+    elSearch.addEventListener("input", filterChampions);
+    elRole.addEventListener("change", filterChampions);
+
+    loadChampions();
+  </script>
+</body>
+</html>

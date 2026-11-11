@@ -1,0 +1,253 @@
+:root {
+  --bg: #E6E8EC;
+  --card: #FFFFFF;
+  --ink: #1B2230;
+  --muted: #5E6779;
+  --line: #CDD2DB;
+  --accent: #1F4FD8;
+  --flag: #F2C230;     /* yellow: manual pill and title bar */
+  --orange: #F28C28;   /* orange: automatic pill */
+  --ph1: #DDE1E8;      /* photo placeholder stripes */
+  --ph2: #D2D7E0;
+
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10141C;
+    --card: #1A2130;
+    --ink: #E8ECF4;
+    --muted: #93A0B8;
+    --line: #2B3548;
+    --accent: #7FA2FF;
+    --ph1: #222B3D;
+    --ph2: #1E2636;
+
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #10141C;
+  --card: #1A2130;
+  --ink: #E8ECF4;
+  --muted: #93A0B8;
+  --line: #2B3548;
+  --accent: #7FA2FF;
+  --ph1: #222B3D;
+  --ph2: #1E2636;
+
+  color-scheme: dark;
+}
+
+/* --- Base --- */
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 16px/1.5 Barlow, system-ui, sans-serif;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* --- Page header --- */
+.wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 36px 20px 64px;
+}
+
+h1 {
+  margin: 0 0 12px;
+  padding-left: 14px;
+  border-left: 10px solid var(--flag);
+  font: 800 clamp(2.6rem, 7vw, 5rem)/.9 "Barlow Condensed", Impact, sans-serif;
+  letter-spacing: -.01em;
+}
+
+.lede {
+  max-width: 58ch;
+  margin: 0 0 26px;
+  color: var(--muted);
+}
+
+/* --- Search and filters --- */
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+input,
+select {
+  min-width: 0;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+}
+
+input[type="search"] {
+  flex: 1 1 220px;
+}
+
+.count {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: .9rem;
+}
+
+/* --- Car cards --- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 18px;
+}
+
+.car {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+}
+
+/* Photo area. Shows striped placeholder text until a photo loads. */
+.car figure {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  aspect-ratio: 16 / 10;
+  background: repeating-linear-gradient(135deg, var(--ph1) 0 14px, var(--ph2) 14px 28px);
+  color: var(--muted);
+  font: 700 1.1rem "Barlow Condensed", sans-serif;
+}
+
+.car img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.car .body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px 16px;
+}
+
+.brand {
+  color: var(--accent);
+  font-size: .95rem;
+  font-weight: 600;
+}
+
+.car h2 {
+  margin: 2px 0 0;
+  font: 800 1.9rem/1 "Barlow Condensed", sans-serif;
+}
+
+/* Engine and transmission rows */
+dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 5px 14px;
+  margin: 0;
+  font-size: .95rem;
+}
+
+dt {
+  color: var(--muted);
+}
+
+dd {
+  margin: 0;
+}
+
+.price {
+  font: 800 1.6rem "Barlow Condensed", sans-serif;
+}
+
+.price small {
+  margin-left: 4px;
+  color: var(--muted);
+  font: 500 .8rem Barlow, sans-serif;
+}
+
+/* --- Spec strip (hp, torque, 0-60, top speed) --- */
+.specs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.spec {
+  padding: 8px 2px;
+  text-align: center;
+}
+
+.spec + .spec {
+  border-left: 1px solid var(--line);
+}
+
+.spec b {
+  display: block;
+  font: 800 1.35rem/1 "Barlow Condensed", sans-serif;
+}
+
+.spec span {
+  color: var(--muted);
+  font-size: .72rem;
+}
+
+/* --- Transmission pills --- */
+.trans {
+  display: inline-block;
+  padding: 1px 9px;
+  border: 1px solid var(--ink);
+  border-radius: 99px;
+  font-size: .82rem;
+  font-weight: 600;
+}
+
+.trans.manual {
+  border-color: var(--flag);
+  background: var(--flag);
+  color: #1B2230;
+}
+
+.trans.automatic {
+  border-color: var(--orange);
+  background: var(--orange);
+  color: #1B2230;
+}
+
+/* --- Empty state -- */
+.empty {
+  padding: 36px 0;
+  color: var(--muted);
+}

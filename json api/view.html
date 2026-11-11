@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Champion Details | Runeterra Dex</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #10131b; color: #f4f5f7; }
+    .topbar { background: linear-gradient(110deg, #091b2b, #123c4b); border-bottom: 1px solid #c89b3c; }
+    .brand { color: #f0e6d2; letter-spacing: .12em; font-weight: 800; }
+    .detail-card { background: #19222d; border: 1px solid #344454; }
+    .muted { color: #aeb8c2; }
+    .gold { color: #d8b65c; }
+    .champion-splash { width: 100%; max-height: 560px; object-fit: cover; object-position: top; }
+    .spell-icon { width: 64px; height: 64px; border: 2px solid #9b762d; }
+    .stat { background: #111a23; border: 1px solid #344454; border-radius: .5rem; padding: .8rem; }
+    .ability-row { background: #111a23; border: 1px solid #344454; border-radius: .75rem; padding: 1rem; }
+    .btn-back { background: #263e4b; color: #f0e6d2; border: 1px solid #536878; }
+    .btn-back:hover { background: #345466; color: white; }
+  </style>
+</head>
+<body>
+  <header class="topbar shadow mb-4">
+    <div class="container py-4 text-center">
+      <div class="brand display-5">RUNETERRA DEX</div>
+      <div class="muted">Champion Profile</div>
+    </div>
+  </header>
+
+  <main class="container pb-5">
+    <a href="index.html" class="btn btn-back mb-4">← Back to champions</a>
+
+    <div id="championDetails">
+      <div class="text-center py-5">
+        <div class="spinner-border text-warning" role="status"></div>
+        <p class="muted mt-3">Loading champion profile...</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const championId = params.get("id");
+    const detailsContainer = document.getElementById("championDetails");
+
+    async function loadChampionDetails() {
+      if (!championId) {
+        detailsContainer.innerHTML = `<div class="alert alert-warning">No champion was selected. Return to the champion list.</div>`;
+        return;
+      }
+
+      try {
+        // Use the same latest patch version as the champion list.
+        const versionsResponse = await fetch("https://ddragon.leagueoflegends.com/api/versions.json");
+        const versions = await versionsResponse.json();
+        const version = versions[0];
+
+        // Individual champion endpoint uses the champion's ID in the URL.
+        const response = await fetch(
+          `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion/${encodeURIComponent(championId)}.json`
+        );
+        if (!response.ok) throw new Error("Champion profile not found.");
+        const result = await response.json();
+        const champion = result.data[championId];
+
+        const splashUrl = `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${champion.id}_0.jpg`;
+        const tags = champion.tags.map(tag => `<span class="badge text-bg-secondary me-1">${tag}</span>`).join("");
+        const stats = Object.entries(champion.stats).map(([name, value]) => `
+          <div class="col-6 col-md-3">
+            <div class="stat">
+              <div class="muted small">${name.replace(/([A-Z])/g, " $1")}</div>
+              <div class="gold fw-bold">${value}</div>
+            </div>
+          </div>
+        `).join("");
+
+        const passive = `
+          <div class="ability-row d-flex gap-3 align-items-start mb-3">
+            <img class="spell-icon rounded" src="https://ddragon.leagueoflegends.com/cdn/${version}/img/passive/${champion.passive.image.full}" alt="Passive icon">
+            <div><h5 class="gold">${champion.passive.name} <small class="muted">(Passive)</small></h5>
+              <p class="muted mb-0">${champion.passive.description}</p></div>
+          </div>`;
+
+        const spells = champion.spells.map((spell, index) => `
+          <div class="ability-row d-flex gap-3 align-items-start mb-3">
+            <img class="spell-icon rounded" src="https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${spell.image.full}" alt="${spell.name} icon">
+            <div>
+              <h5 class="gold">${spell.name} <small class="muted">(${["Q", "W", "E", "R"][index]})</small></h5>
+              <p class="muted mb-0">${spell.description}</p>
+            </div>
+          </div>
+        `).join("");
+
+        const skins = champion.skins.map(skin => `
+          <div class="col-6 col-md-4 col-lg-3">
+            <div class="card detail-card h-100">
+              <img class="card-img-top" loading="lazy"
+                src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${champion.id}_${skin.num}.jpg"
+                alt="${skin.name === "default" ? champion.name : skin.name}">
+              <div class="card-body"><p class="mb-0 small">${skin.name === "default" ? "Classic" : skin.name}</p></div>
+            </div>
+          </div>
+        `).join("");
+
+        detailsContainer.innerHTML = `
+          <section class="card detail-card overflow-hidden mb-4">
+            <img class="champion-splash" src="${splashUrl}" alt="${champion.name} splash art">
+            <div class="card-body p-4 p-lg-5">
+              <p class="gold text-uppercase small fw-bold mb-2">${champion.title}</p>
+              <h1 class="display-4 fw-bold">${champion.name}</h1>
+              <div class="mb-3">${tags}</div>
+              <p class="muted">${champion.lore}</p>
+            </div>
+          </section>
+
+          <section class="detail-card rounded-3 p-4 mb-4">
+            <h2 class="h3 gold mb-3">Champion Stats</h2>
+            <div class="row g-3">${stats}</div>
+          </section>
+
+          <section class="detail-card rounded-3 p-4 mb-4">
+            <h2 class="h3 gold mb-3">Abilities</h2>
+            ${passive}
+            ${spells}
+          </section>
+
+          <section class="detail-card rounded-3 p-4">
+            <h2 class="h3 gold mb-3">Skins (${champion.skins.length})</h2>
+            <div class="row g-3">${skins}</div>
+          </section>
+        `;
+
+        document.title = `${champion.name} | Runeterra Dex`;
+      } catch (error) {
+        detailsContainer.innerHTML = `<div class="alert alert-danger">${error.message} Please return to the list and try again.</div>`;
+      }
+    }
+
+    loadChampionDetails();
+  </script>
+</body>
+</html>

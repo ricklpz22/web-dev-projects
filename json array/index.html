@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sports Car Garage</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <h1>Sports Car Garage</h1>
+  <p class="lede">Every car is a card built from a JSON record: brand, engine, transmission and estimated price. Add a photo to a card by editing its "image" path in index.html.</p>
+
+  <div class="bar">
+    <input type="search" id="q" placeholder="Search brand, model, engine or gearbox" aria-label="Search cars">
+    <select id="brand" aria-label="Filter by brand"><option value="">All brands</option></select>
+    <select id="trans" aria-label="Filter by transmission"><option value="">Any transmission</option><option value="manual">Manual</option><option value="automatic">Automatic</option></select>
+    <select id="sort" aria-label="Sort cars"><option value="brand">Sort by brand</option><option value="priceAsc">Price, low to high</option><option value="priceDesc">Price, high to low</option></select>
+  </div>
+  <p class="count" id="count" aria-live="polite"></p>
+  <div class="grid" id="grid"></div>
+</div>
+
+<script id="car-data" type="application/json">
+[
+ {"id":"porsche-911","brand":"Porsche","model":"911 Carrera","engine":"3.0L twin-turbo flat-6","transmission":"automatic","gearbox":"8-speed PDK","price":135000,"image":"cars/porsche911.png","hp":388,"torque":331,"zeroToSixty":3.9,"topSpeed":183,"drivetrain":"RWD"},
+ {"id":"corvette","brand":"Chevrolet","model":"Corvette Stingray","engine":"6.2L naturally aspirated V8","transmission":"automatic","gearbox":"8-speed dual-clutch","price":70000,"image":"cars/stingray.png","hp":490,"torque":465,"zeroToSixty":2.9,"topSpeed":194,"drivetrain":"RWD"},
+ {"id":"supra","brand":"Toyota","model":"GR Supra 3.0","engine":"3.0L turbo inline-6","transmission":"manual","gearbox":"6-speed manual","price":58000,"image":"cars/supra3.png","hp":382,"torque":368,"zeroToSixty":4.1,"topSpeed":155,"drivetrain":"RWD"},
+ {"id":"nissan-z","brand":"Nissan","model":"Z","engine":"3.0L twin-turbo V6","transmission":"manual","gearbox":"6-speed manual","price":45000,"image":"cars/nissanz.png","hp":400,"torque":350,"zeroToSixty":4.5,"topSpeed":155,"drivetrain":"RWD"},
+ {"id":"mustang","brand":"Ford","model":"Mustang GT","engine":"5.0L naturally aspirated V8","transmission":"manual","gearbox":"6-speed manual","price":45000,"image":"cars/fordmustang.png","hp":480,"torque":415,"zeroToSixty":4.3,"topSpeed":155,"drivetrain":"RWD"},
+ {"id":"mx5","brand":"Mazda","model":"MX-5 Miata","engine":"2.0L naturally aspirated inline-4","transmission":"manual","gearbox":"6-speed manual","price":30000,"image":"cars/miata.png","hp":181,"torque":151,"zeroToSixty":5.7,"topSpeed":136,"drivetrain":"RWD"},
+ {"id":"ferrari-296","brand":"Ferrari","model":"296 GTB","engine":"3.0L twin-turbo V6 plug-in hybrid","transmission":"automatic","gearbox":"8-speed dual-clutch","price":330000,"image":"cars/ferrari296.png","hp":819,"torque":546,"zeroToSixty":2.9,"topSpeed":205,"drivetrain":"RWD"},
+ {"id":"huracan","brand":"Lamborghini","model":"Huracán","engine":"5.2L naturally aspirated V10","transmission":"automatic","gearbox":"7-speed dual-clutch","price":250000,"image":"cars/hurucan.png","hp":631,"torque":443,"zeroToSixty":2.9,"topSpeed":202,"drivetrain":"AWD"},
+ {"id":"cayman-gt4","brand":"Porsche","model":"718 Cayman GT4","engine":"4.0L naturally aspirated flat-6","transmission":"manual","gearbox":"6-speed manual","price":105000,"image":"cars/cayman.png","hp":414,"torque":309,"zeroToSixty":4.2,"topSpeed":188,"drivetrain":"RWD"},
+ {"id":"porsche-gt3","brand":"Porsche","model":"911 GT3","engine":"4.0L naturally aspirated flat-6","transmission":"automatic","gearbox":"7-speed PDK dual-clutch (DCT)","price":225000,"image":"cars/porsche911gt3.png","hp":502,"torque":331,"zeroToSixty":3.2,"topSpeed":198,"drivetrain":"RWD"},
+ {"id":"porsche-901","brand":"Porsche","model":"911 (1965, type 901)","engine":"2.0L air-cooled flat-6","transmission":"manual","gearbox":"5-speed dogleg manual (1st gear down-left)","price":150000,"image":"cars/porsche901.png","hp":130,"torque":128,"zeroToSixty":8.3,"topSpeed":131,"drivetrain":"RWD"},
+ {"id":"camaro-ss","brand":"Chevrolet","model":"Camaro SS","engine":"6.2L naturally aspirated V8","transmission":"manual","gearbox":"6-speed manual","price":44000,"image":"cars/camaross.png","hp":455,"torque":455,"zeroToSixty":4.1,"topSpeed":165,"drivetrain":"RWD"},
+ {"id":"corvette-z06","brand":"Chevrolet","model":"Corvette Z06","engine":"5.5L naturally aspirated flat-plane V8","transmission":"automatic","gearbox":"8-speed dual-clutch (DCT)","price":115000,"image":"cars/corvettez06.png","hp":670,"torque":460,"zeroToSixty":2.6,"topSpeed":195,"drivetrain":"RWD"},
+ {"id":"gr86","brand":"Toyota","model":"GR86","engine":"2.4L naturally aspirated flat-4","transmission":"automatic","gearbox":"6-speed automatic","price":31000,"image":"cars/gr86.png","hp":228,"torque":184,"zeroToSixty":6.1,"topSpeed":140,"drivetrain":"RWD"},
+ {"id":"nissan-z-auto","brand":"Nissan","model":"Z (automatic)","engine":"3.0L twin-turbo V6","transmission":"automatic","gearbox":"9-speed automatic","price":52000,"image":"cars/nissanzauto.png","hp":400,"torque":350,"zeroToSixty":4.3,"topSpeed":155,"drivetrain":"RWD"},
+ {"id":"gtr","brand":"Nissan","model":"GT-R Premium","engine":"3.8L twin-turbo V6","transmission":"automatic","gearbox":"6-speed dual-clutch (DCT)","price":120000,"image":"cars/gtr.png","hp":565,"torque":467,"zeroToSixty":2.9,"topSpeed":196,"drivetrain":"AWD"},
+ {"id":"gt500","brand":"Ford","model":"Mustang Shelby GT500","engine":"5.2L supercharged V8","transmission":"automatic","gearbox":"7-speed dual-clutch (DCT)","price":80000,"image":"cars/gt500.png","hp":760,"torque":625,"zeroToSixty":3.5,"topSpeed":180,"drivetrain":"RWD"},
+ {"id":"mx5-auto","brand":"Mazda","model":"MX-5 Miata (automatic)","engine":"2.0L naturally aspirated inline-4","transmission":"automatic","gearbox":"6-speed automatic","price":31000,"image":"cars/miataauto.png","hp":181,"torque":151,"zeroToSixty":6.0,"topSpeed":136,"drivetrain":"RWD"},
+ {"id":"ferrari-f430","brand":"Ferrari","model":"F430 (gated manual)","engine":"4.3L naturally aspirated V8","transmission":"manual","gearbox":"6-speed gated manual","price":170000,"image":"cars/f430.png","hp":483,"torque":343,"zeroToSixty":4.3,"topSpeed":196,"drivetrain":"RWD"},
+ {"id":"ferrari-f355","brand":"Ferrari","model":"F355 F1","engine":"3.5L naturally aspirated V8","transmission":"manual","gearbox":"6-speed F1 sequential (paddle shift, no clutch pedal)","price":110000,"image":"cars/f355.png","hp":375,"torque":268,"zeroToSixty":4.7,"topSpeed":183,"drivetrain":"RWD"},
+ {"id":"gallardo","brand":"Lamborghini","model":"Gallardo LP560-4 (manual)","engine":"5.2L naturally aspirated V10","transmission":"manual","gearbox":"6-speed gated manual","price":120000,"image":"cars/gallardo.png","hp":552,"torque":398,"zeroToSixty":3.8,"topSpeed":202,"drivetrain":"AWD"},
+ {"id":"aventador","brand":"Lamborghini","model":"Aventador LP700-4","engine":"6.5L naturally aspirated V12","transmission":"manual","gearbox":"7-speed ISR sequential (paddle shift, no clutch pedal)","price":280000,"image":"cars/aventador.png","hp":690,"torque":509,"zeroToSixty":2.9,"topSpeed":217,"drivetrain":"AWD"},
+ {"id":"bmw-m2","brand":"BMW","model":"M2","engine":"3.0L twin-turbo inline-6","transmission":"manual","gearbox":"6-speed manual","price":64000,"image":"cars/m2.png","hp":453,"torque":406,"zeroToSixty":4.1,"topSpeed":155,"drivetrain":"RWD"},
+ {"id":"bmw-m4","brand":"BMW","model":"M4 Competition","engine":"3.0L twin-turbo inline-6","transmission":"automatic","gearbox":"8-speed M Steptronic automatic","price":85000,"image":"cars/m4.png","hp":503,"torque":479,"zeroToSixty":3.4,"topSpeed":155,"drivetrain":"RWD"},
+ {"id":"bmw-m3-e46","brand":"BMW","model":"M3 (E46, SMG)","engine":"3.2L naturally aspirated inline-6","transmission":"manual","gearbox":"6-speed SMG II sequential (paddle shift, no clutch pedal)","price":35000,"image":"cars/m3e46.png","hp":333,"torque":262,"zeroToSixty":5.0,"topSpeed":155,"drivetrain":"RWD"},
+ {"id":"golf-gti","brand":"Volkswagen","model":"Golf GTI","engine":"2.0L turbo inline-4","transmission":"manual","gearbox":"6-speed manual","price":33000,"image":"cars/gti.png","hp":241,"torque":273,"zeroToSixty":6.0,"topSpeed":155,"drivetrain":"FWD"},
+ {"id":"golf-r","brand":"Volkswagen","model":"Golf R (DSG)","engine":"2.0L turbo inline-4","transmission":"automatic","gearbox":"7-speed DSG dual-clutch (DCT)","price":48000,"image":"cars/golfr.png","hp":315,"torque":295,"zeroToSixty":4.6,"topSpeed":155,"drivetrain":"AWD"},
+ {"id":"civic-type-r","brand":"Honda","model":"Civic Type R","engine":"2.0L turbo inline-4","transmission":"manual","gearbox":"6-speed manual","price":45000,"image":"cars/civictyper.png","hp":315,"torque":310,"zeroToSixty":5.0,"topSpeed":171,"drivetrain":"FWD"},
+ {"id":"nsx","brand":"Honda","model":"NSX","engine":"3.5L twin-turbo V6 hybrid","transmission":"automatic","gearbox":"9-speed dual-clutch (DCT)","price":170000,"image":"cars/nsx.png","hp":573,"torque":476,"zeroToSixty":2.9,"topSpeed":191,"drivetrain":"AWD"},
+ {"id":"brz-manual","brand":"Subaru","model":"BRZ (manual)","engine":"2.4L naturally aspirated flat-4","transmission":"manual","gearbox":"6-speed manual","price":31000,"image":"cars/brzmanual.png","hp":228,"torque":184,"zeroToSixty":5.9,"topSpeed":140,"drivetrain":"RWD"},
+ {"id":"brz-auto","brand":"Subaru","model":"BRZ (automatic)","engine":"2.4L naturally aspirated flat-4","transmission":"automatic","gearbox":"6-speed automatic","price":33000,"image":"cars/brzauto.png","hp":228,"torque":184,"zeroToSixty":6.2,"topSpeed":140,"drivetrain":"RWD"},
+ {"id":"r8-v8","brand":"Audi","model":"R8 V8 (manual)","engine":"4.2L naturally aspirated V8","transmission":"manual","gearbox":"6-speed open-gate manual","price":65000,"image":"cars/r8v8.png","hp":414,"torque":317,"zeroToSixty":4.5,"topSpeed":187,"drivetrain":"AWD"},
+ {"id":"r8-v10","brand":"Audi","model":"R8 V10 Performance","engine":"5.2L naturally aspirated V10","transmission":"automatic","gearbox":"7-speed S tronic dual-clutch (DCT)","price":190000,"image":"cars/audi.png","hp":602,"torque":413,"zeroToSixty":3.1,"topSpeed":205,"drivetrain":"AWD"}
+]
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>
